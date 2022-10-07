@@ -2,6 +2,7 @@ const express = require('express');
 const dbConnection  = require('./config/dbconfig');
 const user = require('./routes/user');
 const login = require('./routes/login');
+const vehicle = require('./routes/vehicle');
 
 const app = express();
 
@@ -16,6 +17,7 @@ const baseURL = '/api/';
 
 app.use(`${baseURL}users`,user);
 app.use(`${baseURL}login`,login);
+app.use(`${baseURL}vehicles`,vehicle);
 
 app.get('/',(req, res)=>{
     console.log('req was received');
