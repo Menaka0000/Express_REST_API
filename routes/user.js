@@ -8,19 +8,19 @@ const User = mongoose.model('User', userSchema);
 router.post('/', async (req, res) => {
     const body=req.body;
     if (body.userName===undefined || body.email===undefined || body.password===undefined){
-        res.send('body doesnt have the correct format!')
+        res.status(400).json('body doesnt have the correct format!')
         return;
     }
 
     try {
         const userCount = await User.find({userName: req.body.userName}).count();
         if (userCount !== 0) {
-            res.status(400).send('This userName is already taken!');
+            res.status(400).json('This userName is already taken!');
             return;
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send('Unknown error has occurred');
+        res.status(500).json('Unknown error has occurred');
     }
 
     const user = new User({
@@ -32,11 +32,11 @@ router.post('/', async (req, res) => {
     try {
         const result = await user.save();
         console.log(result);
-        res.status(200).send('User account has been successfully created!')
+        res.status(200).json('User account has been successfully created!')
     } catch (error) {
         console.log(error.message);
-        if (error.message) res.status(400).send(error.message);
-        else res.status(400).send('Unknown error has occurred, Please try again!');
+        if (error.message) res.status(400).json(error.message);
+        else res.status(500).json('Unknown error has occurred, Please try again!');
     }
 });
 

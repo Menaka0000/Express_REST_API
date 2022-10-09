@@ -6,10 +6,11 @@ const router = express.Router();
 const Vehicle = mongoose.model('car', carSchema);
 
 router.get('/:userId',async (req,res)=>{
+    console.log('requested for vehicles')
     try {
         const userCount = await Vehicle.find({userId: req.params.userId}).count();
         if (userCount === 0) {
-            res.status(404).send('Vehicles with the given userId were not found!');
+            res.status(404).json('Vehicles with the given userId were not found!');
             return;
         }
     }catch (error){
@@ -18,7 +19,7 @@ router.get('/:userId',async (req,res)=>{
 
     try {
         const vehicles = await Vehicle.find({userId: req.params.userId});
-        res.status(200).send(vehicles);
+        res.status(200).json(vehicles);
     } catch (error) {
         sendUnknownError(error,res);
     }
@@ -26,16 +27,17 @@ router.get('/:userId',async (req,res)=>{
 
 router.post('/', async (req, res) => {
     const body = req.body;
+    console.log(body)
     if (body.registeredId === undefined || body.userId === undefined || body.manufacturer === undefined ||
         body.description === undefined || body.price === undefined) {
-        res.send('body doesnt have the correct format!');
+        res.json('body doesnt have the correct format!');
         return;
     }
 
     try {
         const vehicleCount = await Vehicle.find({registeredId: req.body.registeredId}).count();
         if (vehicleCount !== 0) {
-            res.status(400).send('There is a vehicle registered under the given ID!');
+            res.status(400).json('There is a vehicle registered under the given ID!');
             return;
         }
     } catch (error) {
@@ -53,17 +55,17 @@ router.post('/', async (req, res) => {
     try {
         const result = await car.save();
         console.log(result);
-        res.status(200).send('Vehicle has been saved successfully!')
+        res.status(200).json('Vehicle has been saved successfully!')
     } catch (error) {
         console.log(error.message);
-        if (error.message) res.status(400).send(error.message);
+        if (error.message) res.status(400).json(error.message);
         else  sendUnknownError(error,res);
     }
 })
 
 function sendUnknownError(error,res){
     console.log(error);
-    res.status(500).send('Unknown error has occurred, Please try again!');
+    res.status(500).json('Unknown error has occurred, Please try again!');
 }
 
 module.exports = router;
